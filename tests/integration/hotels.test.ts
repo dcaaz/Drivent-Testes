@@ -5,6 +5,7 @@ import httpStatus from 'http-status';
 import { createEnrollmentWithAddress, createUser, createTicketType, createTicket } from '../factories';
 import { createHotel, createHotelId } from '../factories/hotels.factory';
 import { TicketStatus } from '@prisma/client';
+import faker from '@faker-js/faker';
 
 beforeAll(async () => {
   await init();
@@ -32,7 +33,7 @@ describe('get /hotels', () => {
 
 describe('When token is valid', () => {
 
-  it('should respond with status 404 when user doesnt have an enrollment yet', async () => {
+  it('Should respond with status 404 when user doesnt have an enrollment yet', async () => {
     const token = await generateValidToken();
     const response = await server.get('/hotels').set('Authorization', `Bearer ${token}`);
     expect(response.status).toEqual(httpStatus.NOT_FOUND);
@@ -46,7 +47,7 @@ describe('When token is valid', () => {
     expect(response.status).toEqual(httpStatus.NOT_FOUND);
   });
 
-  it("should respond with status 401 when ticket status isn't paid", async () => {
+  it("Should respond with status 401 when ticket status isn't paid", async () => {
     const user = await createUser();
     const token = await generateValidToken(user);
     const enrollment = await createEnrollmentWithAddress(user);
@@ -57,7 +58,7 @@ describe('When token is valid', () => {
   });
 
 
-  it('should respond with status 200 with hotels data', async () => {
+  it('Should respond with status 200 with hotels data', async () => {
     const user = await createUser();
     const token = await generateValidToken(user);
     const enrollment = await createEnrollmentWithAddress(user);
@@ -72,8 +73,21 @@ describe('When token is valid', () => {
 
 });
 
-describe('/:hotelId', () => {
-  it("should respond with status 404 when hotel doesn't exits", async () => {
+describe('GET hotels/:hotelId', () => {
+  
+  it('Should respond with status 401 if NO token', async () => {
+    const response = await server.get('/hotels/1');
+
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it('Should respond with status 401 if INVALIDE token', async () => {
+    const response = await server.get('/hotels/1').set('Authorization', `Bearer XXXXX`);
+
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("Should respond with status 404 when hotel doesn't exits", async () => {
     const user = await createUser();
     const token = await generateValidToken(user);
 
@@ -82,7 +96,7 @@ describe('/:hotelId', () => {
     expect(response.status).toEqual(httpStatus.NOT_FOUND);
   });
 
-  it('should respond with status 200 with specific hotel data and rooms', async () => {
+  it('Should respond with status 200 with specific hotel data and rooms', async () => {
     const user = await createUser();
     const token = await generateValidToken(user);
     const enrollment = await createEnrollmentWithAddress(user);

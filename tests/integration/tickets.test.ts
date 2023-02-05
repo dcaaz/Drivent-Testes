@@ -19,13 +19,13 @@ beforeEach(async () => {
 const server = supertest(app);
 
 describe("GET /tickets/types", () => {
-  it("should respond with status 401 if no token is given", async () => {
+  it("Should respond with status 401 if no token is given", async () => {
     const response = await server.get("/tickets/types");
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
 
-  it("should respond with status 401 if given token is not valid", async () => {
+  it("Should respond with status 401 if given token is not valid", async () => {
     const token = faker.lorem.word();
 
     const response = await server.get("/tickets/types").set("Authorization", `Bearer ${token}`);
@@ -33,7 +33,7 @@ describe("GET /tickets/types", () => {
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
 
-  it("should respond with status 401 if there is no session for given token", async () => {
+  it("Should respond with status 401 if there is no session for given token", async () => {
     const userWithoutSession = await createUser();
     const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
 
@@ -43,7 +43,7 @@ describe("GET /tickets/types", () => {
   });
 
   describe("when token is valid", () => {
-    it("should respond with empty array when there are no ticket types created", async () => {
+    it("Should respond with empty array when there are no ticket types created", async () => {
       const token = await generateValidToken();
 
       const response = await server.get("/tickets/types").set("Authorization", `Bearer ${token}`);
@@ -51,7 +51,7 @@ describe("GET /tickets/types", () => {
       expect(response.body).toEqual([]);
     });
 
-    it("should respond with status 200 and with existing TicketTypes data", async () => {
+    it("Should respond with status 200 and with existing TicketTypes data", async () => {
       const token = await generateValidToken();
 
       const ticketType = await createTicketType();
@@ -75,13 +75,13 @@ describe("GET /tickets/types", () => {
 });
 
 describe("GET /tickets", () => {
-  it("should respond with status 401 if no token is given", async () => {
+  it("Should respond with status 401 if no token is given", async () => {
     const response = await server.get("/tickets");
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
 
-  it("should respond with status 401 if given token is not valid", async () => {
+  it("Should respond with status 401 if given token is not valid", async () => {
     const token = faker.lorem.word();
 
     const response = await server.get("/tickets").set("Authorization", `Bearer ${token}`);
@@ -89,7 +89,7 @@ describe("GET /tickets", () => {
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
 
-  it("should respond with status 401 if there is no session for given token", async () => {
+  it("Should respond with status 401 if there is no session for given token", async () => {
     const userWithoutSession = await createUser();
     const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
 
@@ -99,7 +99,7 @@ describe("GET /tickets", () => {
   });
 
   describe("when token is valid", () => {
-    it("should respond with status 404 when user doesnt have an enrollment yet", async () => {
+    it("Should respond with status 404 when user doesnt have an enrollment yet", async () => {
       const token = await generateValidToken();
 
       const response = await server.get("/tickets").set("Authorization", `Bearer ${token}`);
@@ -107,7 +107,7 @@ describe("GET /tickets", () => {
       expect(response.status).toEqual(httpStatus.NOT_FOUND);
     });
 
-    it("should respond with status 404 when user doesnt have a ticket yet", async () => {
+    it("Should respond with status 404 when user doesnt have a ticket yet", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       await createEnrollmentWithAddress(user);
@@ -117,7 +117,7 @@ describe("GET /tickets", () => {
       expect(response.status).toEqual(httpStatus.NOT_FOUND);
     });
 
-    it("should respond with status 200 and with ticket data", async () => {
+    it("Should respond with status 200 and with ticket data", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
@@ -149,13 +149,13 @@ describe("GET /tickets", () => {
 });
 
 describe("POST /tickets", () => {
-  it("should respond with status 401 if no token is given", async () => {
+  it("Should respond with status 401 if no token is given", async () => {
     const response = await server.post("/tickets");
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
 
-  it("should respond with status 401 if given token is not valid", async () => {
+  it("Should respond with status 401 if given token is not valid", async () => {
     const token = faker.lorem.word();
 
     const response = await server.post("/tickets").set("Authorization", `Bearer ${token}`);
@@ -163,7 +163,7 @@ describe("POST /tickets", () => {
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
 
-  it("should respond with status 401 if there is no session for given token", async () => {
+  it("Should respond with status 401 if there is no session for given token", async () => {
     const userWithoutSession = await createUser();
     const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
 
@@ -173,7 +173,7 @@ describe("POST /tickets", () => {
   });
 
   describe("when token is valid", () => {
-    it("should respond with status 400 when ticketTypeId is not present in body", async () => {
+    it("Should respond with status 400 when ticketTypeId is not present in body", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       await createEnrollmentWithAddress(user);
@@ -184,7 +184,7 @@ describe("POST /tickets", () => {
       expect(response.status).toEqual(httpStatus.BAD_REQUEST);
     });
 
-    it("should respond with status 404 when user doesnt have enrollment yet", async () => {
+    it("Should respond with status 404 when user doesnt have enrollment yet", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const ticketType = await createTicketType();
@@ -197,7 +197,7 @@ describe("POST /tickets", () => {
       expect(response.status).toEqual(httpStatus.NOT_FOUND);
     });
 
-    it("should respond with status 201 and with ticket data", async () => {
+    it("Should respond with status 201 and with ticket data", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
@@ -228,7 +228,7 @@ describe("POST /tickets", () => {
       });
     });
 
-    it("should insert a new ticket in the database", async () => {
+    it("Should insert a new ticket in the database", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       await createEnrollmentWithAddress(user);

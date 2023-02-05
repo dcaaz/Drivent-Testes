@@ -16,18 +16,18 @@ describe("signIn", () => {
     password: faker.internet.password(6),
   });
 
-  it("should throw InvalidCredentialError if there is no user for given email", async () => {
+  it("Should throw InvalidCredentialError if there is no user for given email", async () => {
     const params = generateParams();
 
     try {
       await authenticationService.signIn(params);
-      fail("should throw InvalidCredentialError");
+      fail("Should throw InvalidCredentialError");
     } catch (error) {
       expect(error).toEqual(invalidCredentialsError());
     }
   });
 
-  it("should throw InvalidCredentialError if given password is invalid", async () => {
+  it("Should throw InvalidCredentialError if given password is invalid", async () => {
     const params = generateParams();
     await createUser({
       email: params.email,
@@ -36,14 +36,14 @@ describe("signIn", () => {
 
     try {
       await authenticationService.signIn(params);
-      fail("should throw InvalidCredentialError");
+      fail("Should throw InvalidCredentialError");
     } catch (error) {
       expect(error).toEqual(invalidCredentialsError());
     }
   });
 
   describe("when email and password are valid", () => {
-    it("should return user data if given email and password are valid", async () => {
+    it("Should return user data if given email and password are valid", async () => {
       const params = generateParams();
       const user = await createUser(params);
 
@@ -56,7 +56,7 @@ describe("signIn", () => {
       );
     });
 
-    it("should create new session and return given token", async () => {
+    it("Should create new session and return given token", async () => {
       const params = generateParams();
       const user = await createUser(params);
 

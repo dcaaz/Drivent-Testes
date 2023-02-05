@@ -16,13 +16,13 @@ beforeAll(async () => {
 const server = supertest(app);
 
 describe("POST /users", () => {
-  it("should respond with status 400 when body is not given", async () => {
+  it("Should respond with status 400 when body is not given", async () => {
     const response = await server.post("/users");
 
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
   });
 
-  it("should respond with status 400 when body is not valid", async () => {
+  it("Should respond with status 400 when body is not valid", async () => {
     const invalidBody = { [faker.lorem.word()]: faker.lorem.word() };
 
     const response = await server.post("/users").send(invalidBody);
@@ -36,7 +36,7 @@ describe("POST /users", () => {
       password: faker.internet.password(6),
     });
 
-    it("should respond with status 400 when there is no event", async () => {
+    it("Should respond with status 400 when there is no event", async () => {
       const body = generateValidBody();
 
       const response = await server.post("/users").send(body);
@@ -44,7 +44,7 @@ describe("POST /users", () => {
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
     });
 
-    it("should respond with status 400 when current event did not started yet", async () => {
+    it("Should respond with status 400 when current event did not started yet", async () => {
       const event = await createEvent({ startsAt: dayjs().add(1, "day").toDate() });
       const body = generateValidBody();
 
@@ -59,7 +59,7 @@ describe("POST /users", () => {
         await createEvent();
       });
 
-      it("should respond with status 409 when there is an user with given email", async () => {
+      it("Should respond with status 409 when there is an user with given email", async () => {
         const body = generateValidBody();
         await createUser(body);
 
@@ -69,7 +69,7 @@ describe("POST /users", () => {
         expect(response.body).toEqual(duplicatedEmailError());
       });
 
-      it("should respond with status 201 and create user when given email is unique", async () => {
+      it("Should respond with status 201 and create user when given email is unique", async () => {
         const body = generateValidBody();
 
         const response = await server.post("/users").send(body);
@@ -81,7 +81,7 @@ describe("POST /users", () => {
         });
       });
 
-      it("should not return user password on body", async () => {
+      it("Should not return user password on body", async () => {
         const body = generateValidBody();
 
         const response = await server.post("/users").send(body);
@@ -89,7 +89,7 @@ describe("POST /users", () => {
         expect(response.body).not.toHaveProperty("password");
       });
 
-      it("should save user on db", async () => {
+      it("Should save user on db", async () => {
         const body = generateValidBody();
 
         const response = await server.post("/users").send(body);
