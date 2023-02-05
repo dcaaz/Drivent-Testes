@@ -1,9 +1,9 @@
 import { prisma } from "@/config";
 import { Enrollment } from "@prisma/client";
 
-async function findUserId(userId: number){
+async function findUserId(userId: number) {
   return prisma.enrollment.findFirst({
-    where: {userId}
+    where: { userId }
   });
 }
 

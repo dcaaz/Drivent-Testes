@@ -1,42 +1,41 @@
-import { notFoundError, unauthorizedError } from '@/errors';
-import enrollmentRepository from '@/repositories/enrollment-repository';
-import hotelRepository from '@/repositories/hotel-repository';
-import ticketRepository from '@/repositories/ticket-repository';
+import { notFoundError, unauthorizedError } from "@/errors";
+import enrollmentRepository from "@/repositories/enrollment-repository";
+import hotelRepository from "@/repositories/hotel-repository";
+import ticketRepository from "@/repositories/ticket-repository";
 
 export async function findALL(userId: number) {
-    const enrollment = await enrollmentRepository.findUserId(userId);
+  const enrollment = await enrollmentRepository.findUserId(userId);
 
-    if (!enrollment) {
-        throw notFoundError();
-    }
+  if (!enrollment) {
+    throw notFoundError();
+  }
 
-    const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
+  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
 
-    if (!ticket) {
-        throw notFoundError();
-    }
+  if (!ticket) {
+    throw notFoundError();
+  }
 
-    if (ticket.status !== "PAID" || !ticket.TicketType.includesHotel) {
-        throw unauthorizedError()
-    }
+  if (ticket.status !== "PAID" || !ticket.TicketType.includesHotel) {
+    throw unauthorizedError();
+  }
 
-    return await hotelRepository.findManyHotels();
+  return await hotelRepository.findManyHotels();
 }
 
-export async function findFirst(id: number){
+export async function findFirst(id: number) {
+  const hotel = await hotelRepository.findUniqueHotel(id);
 
-    const hotel = await hotelRepository.findUniqueHotel(id);
+  if (!hotel) {
+    throw notFoundError();
+  }
 
-    if(!hotel){
-        throw notFoundError();
-    }
-
-    return hotel;
+  return hotel;
 }
 
 const hotelService = {
-    findALL, 
-    findFirst
-}
+  findALL,
+  findFirst
+};
 
 export default hotelService;
