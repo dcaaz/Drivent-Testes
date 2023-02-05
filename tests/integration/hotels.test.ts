@@ -3,7 +3,7 @@ import { cleanDb, generateValidToken } from '../helpers';
 import supertest from 'supertest';
 import httpStatus from 'http-status';
 import { createEnrollmentWithAddress, createUser, createTicketType, createTicket } from '../factories';
-import { createHotel } from '../factories/hotels.factory';
+import { createHotel, createHotelId } from '../factories/hotels.factory';
 import { TicketStatus } from '@prisma/client';
 
 beforeAll(async () => {
@@ -71,3 +71,29 @@ describe('When token is valid', () => {
   });
 
 });
+
+describe('/:hotelId', () => {
+  it("should respond with status 404 when hotel doesn't exits", async () => {
+    const user = await createUser();
+    const token = await generateValidToken(user);
+
+    const response = await server.get('/hotels/0').set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toEqual(httpStatus.NOT_FOUND);
+  });
+
+  it('should respond with status 200 with specific hotel data and rooms', async () => {
+    const user = await createUser();
+    const token = await generateValidToken(user);
+    const enrollment = await createEnrollmentWithAddress(user);
+    const ticketType = await createTicketType();
+    await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
+    const hotelWithRooms = await createHotelId();
+
+    const response = await server.get('/hotels/' + hotelWithRooms.id).set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toEqual(httpStatus.OK);
+
+  })
+
+})

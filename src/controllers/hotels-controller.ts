@@ -23,3 +23,21 @@ export async function getHotels(req: AuthenticatedRequest, res: Response) {
     }
 
 }
+
+export async function getHotelId(req: AuthenticatedRequest, res: Response) {
+    const id = Number(req.params.hotelId);
+  
+    try {
+      const hotel = await hotelService.findFirst(id);
+      res.status(200).send(hotel);
+      return;
+    } catch (error) {
+      if (error.name === 'NotFoundError') {
+        res.sendStatus(httpStatus.NOT_FOUND);
+        return;
+      }
+  
+      res.sendStatus(httpStatus.BAD_REQUEST);
+      return;
+    }
+  }

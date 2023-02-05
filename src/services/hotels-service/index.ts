@@ -23,8 +23,20 @@ export async function findALL(userId: number) {
     return await hotelRepository.findManyHotels();
 }
 
+export async function findFirst(id: number){
+
+    const hotel = await hotelRepository.findUniqueHotel(id);
+
+    if(!hotel){
+        throw notFoundError();
+    }
+
+    return hotel;
+}
+
 const hotelService = {
-    findALL
+    findALL, 
+    findFirst
 }
 
 export default hotelService;
